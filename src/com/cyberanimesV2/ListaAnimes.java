@@ -1,11 +1,11 @@
 package com.cyberanimesV2;
 
 import java.io.IOException;
+
 import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -21,6 +21,8 @@ public class ListaAnimes extends HttpServlet {
 		Banco banco = new Banco();
 		PrintWriter out = response.getWriter();
 		ResultSet resultSet = banco.getAnimes();
+		banco.close();
+		
 		try {
 			while (resultSet.next()) {
 				out.println("<html>	<body style="+"background-color:black;"+"> "
@@ -31,10 +33,6 @@ public class ListaAnimes extends HttpServlet {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
-	
-
-		banco.close();
 	}
 
 }

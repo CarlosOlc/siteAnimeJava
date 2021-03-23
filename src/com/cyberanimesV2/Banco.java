@@ -46,7 +46,7 @@ public class Banco {
 		}
 		return -1;
 	}
-	public void adicionaEP(int number_ep , String img_ep, String url_ep, int fk_anime, String version) {
+	public void adicionaEP(int number_ep , String img_ep, String url_ep, int fk_anime, String version, String url_yay) {
 		Statement statement = null;
 		try {
 			statement = connection.createStatement();
@@ -55,8 +55,8 @@ public class Banco {
 		}
 
 		// inserindo registros
-		String command = String.format("INSERT INTO episodes(number_ep, img_ep, url_ep, fk_anime, version) " 
-									 + "VALUES (%d, '%s', '%s', %d, '%s')", number_ep, img_ep, url_ep, fk_anime, version);
+		String command = String.format("INSERT INTO episodes(number_ep, img_ep, url_ep, fk_anime, version, url_yay) " 
+									 + "VALUES (%d, '%s', '%s', %d, '%s', '%s')", number_ep, img_ep, url_ep, fk_anime, version, url_yay);
 		try {
 			statement.execute(command);
 		} catch (SQLException e) {
@@ -86,7 +86,7 @@ public class Banco {
 		try {
 			stmt = connection.prepareStatement(
 					"Select * from Anime, Episodes "
-					+ "WHere fk_anime= id_anime and name_anime = '" + nome + "'");
+					+ "WHere fk_anime= id_anime and name_anime = '" + nome + "'" +"ORDER BY number_ep DESC");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -99,6 +99,23 @@ public class Banco {
 		return resultSet;
 	}
 
+	public ResultSet getEp() {
+		PreparedStatement stmt = null;
+		try {
+			stmt = connection.prepareStatement(
+					"Select * from Episodes");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			resultSet = stmt.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return resultSet;
+	}
+	
 	public void deletaAnime(String nome) {
 		Statement statement = null;
 		try {
@@ -160,6 +177,43 @@ public class Banco {
 		try {
 			ds.getConnection().close();
 			System.out.println("Conexão Finalizada!");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public String getIdUrl(String url) {
+		PreparedStatement stmt = null;
+		try {
+			stmt = connection.prepareStatement("select * from Episodes where url_ep="+"\""+ url+"\"");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			resultSet = stmt.executeQuery();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		String idAtual = "";
+		try {
+			idAtual = resultSet.getString("number_ep");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return idAtual;
+		
+	}
+
+	public void atualizarUrl(String id_anime, String url_ep, String number_ep) {
+		Statement statement = null;
+		try {
+			statement = connection.createStatement();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		try {
+			statement.execute("UPDATE Episodes set url_ep = "+ url_ep + "where fk_anime = " + id_anime + "and number_ep="+number_ep);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

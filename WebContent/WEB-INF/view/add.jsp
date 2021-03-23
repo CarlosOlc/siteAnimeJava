@@ -1,0 +1,16 @@
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/core" prefix = "c" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>ADD</title>
+</head>
+<body>
+	 <form action="/site/add" method="get">
+
+        Link: <input type="text" name="nome" /><br>
+	          <input  type="submit"/>
+    </form>
+</body>
+</html>
